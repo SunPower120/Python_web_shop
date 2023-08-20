@@ -1,7 +1,7 @@
 from django.urls import path
-
-from . import views 
+from .views import ProductListCreate, CategoryListCreate
 
 urlpatterns = [
-    path('', views.api_home)
+    path('products/', ProductListCreate.as_view(), name='product-list-create'),
+    path('categories/', CategoryListCreate.as_view(), name='category-list-create'),
 ]

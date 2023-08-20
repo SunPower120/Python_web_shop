@@ -1,4 +1,11 @@
-from django.http import JsonResponse
+from rest_framework import generics
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
 
-def api_home(request, *args, **kwargs):
-    return JsonResponse({"message": "Hi there, this is your Django API response!!!"})
+class ProductListCreate(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class CategoryListCreate(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
