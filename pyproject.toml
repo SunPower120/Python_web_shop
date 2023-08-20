@@ -9,6 +9,20 @@ packages = [{include = "web_shop"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+django = "4.2.4"
+asgiref = "3.7.2"
+certifi = "2023.7.22"
+charset-normalizer = "3.2.0"
+django-cors-headers = "4.2.0"
+djangorestframework = "3.14.0"
+idna = "3.4"
+pytz = "2023.3"
+pyyaml = "6.0.1"
+requests = "2.31.0"
+sqlparse = "0.4.4"
+typing-extensions = "4.7.1"
+tzdata = "2023.3"
+urllib3 = "2.0.4"
 
 
 [build-system]
