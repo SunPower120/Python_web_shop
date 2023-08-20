@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: webshop_db
+      POSTGRES_USER: webshop_user
+      POSTGRES_PASSWORD: webshop_password
+
+volumes:
+  postgres_data:
