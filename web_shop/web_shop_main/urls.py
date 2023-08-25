@@ -11,7 +11,7 @@ urlpatterns = [
     path('categories/delete', batch_delete_category, name='batch-delete-category'),
     path('add_to_basket/', AddToBasketView.as_view(), name='add-to-basket'),
     path('confirm_basket/', confirm_basket, name='confirm-basket'),
-    path('auth/register/', djoser_views.UserCreateView.as_view(), name='user-register'),
+    path('auth/register/', djoser_views.UserViewSet.as_view({'post': 'create'}), name='user-register'),
     path('auth/login/', djoser_views.TokenCreateView.as_view(), name='user-login'),
     path('auth/logout/', djoser_views.TokenDestroyView.as_view(), name='user-logout'),
     

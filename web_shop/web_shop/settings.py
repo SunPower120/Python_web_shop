@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import binascii
+from datetime import timedelta
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -135,4 +138,19 @@ REST_FRAMEWORK = {
         'knox.auth.TokenAuthentication',
     ),
     
+}
+
+DJOSER = {
+    'TOKEN_MODEL': 'knox.models.AuthToken',
+    'SERIALIZERS': {
+        'user_create': 'web_shop_main.serializers.UserSerializer',
+    },
+}
+
+REST_KNOX = {
+    'TOKEN_TTL': timedelta(hours=10),
+    'TOKEN_LIMIT_PER_USER': None,
+    'AUTO_REFRESH': False,
+    'TOKEN_KEY': lambda: binascii.hexlify(os.urandom(64)).decode(),
+    'TOKEN_DIGEST': 'hashlib.sha256',
 }

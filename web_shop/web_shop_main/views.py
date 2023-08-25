@@ -1,10 +1,11 @@
 from rest_framework import generics
-from .models import Product, Category, Basket, BasketItem, ShopOwnerAccessPolicy
+from .models import Product, Category, Basket, BasketItem
 from .serializers import ProductSerializer, CategorySerializer, BasketItemSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+
 
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -76,6 +77,3 @@ def confirm_basket(request):
         return Response({"message": "Basket confirmed and products updated."}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class SomeShopOwnerView(generics.ListCreateAPIView):
-    permission_classes = [ShopOwnerAccessPolicy]
