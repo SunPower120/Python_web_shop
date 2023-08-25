@@ -1,9 +1,10 @@
 from rest_framework import generics
-from .models import Product, Category, Basket, BasketItem
+from .models import Product, Category, Basket, BasketItem, ShopOwnerAccessPolicy
 from .serializers import ProductSerializer, CategorySerializer, BasketItemSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 class ProductListCreate(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -51,10 +52,16 @@ def batch_delete_category(request):
 class AddToBasketView(generics.CreateAPIView):
     queryset = BasketItem.objects.all()
     serializer_class = BasketItemSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        basket, _ = Basket.objects.get_or_create(user=self.request.user, confirmed=False)
-        serializer.save(basket=basket)
+        if self.request.user.is_authenticated:
+          basket, _ = Basket.objects.get_or_create(user=self.request.user, confirmed=False)
+          serializer.save(basket=basket)
+        else:
+        # Return a 401 Unauthorized response or another appropriate response
+          return Response({"error": "User needs to be authenticated to add to basket."}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(['POST'])
 def confirm_basket(request):
@@ -69,3 +76,6 @@ def confirm_basket(request):
         return Response({"message": "Basket confirmed and products updated."}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class SomeShopOwnerView(generics.ListCreateAPIView):
+    permission_classes = [ShopOwnerAccessPolicy]

@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["SunPower120 <112656928+SunPower120@users.noreply.github.com>"]
 license = "MIT"
-readme = "README.md"
 packages = [{include = "web_shop"}]
 
 [tool.poetry.dependencies]
@@ -15,6 +14,8 @@ certifi = "2023.7.22"
 charset-normalizer = "3.2.0"
 django-cors-headers = "4.2.0"
 djangorestframework = "3.14.0"
+django-rest-knox = "^4.2.0"
+djoser = "^2.1.0"
 idna = "3.4"
 pytz = "2023.3"
 pyyaml = "6.0.1"
@@ -24,6 +25,7 @@ typing-extensions = "4.7.1"
 tzdata = "2023.3"
 urllib3 = "2.0.4"
 psycopg2-binary = "^2.9.7"
+drf-access-policy = "^1.5.0"
 
 
 [build-system]
