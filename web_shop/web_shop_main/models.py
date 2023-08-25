@@ -14,3 +14,12 @@ class Product(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_shop_owner = models.BooleanField(default=False)
+
+class Basket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    confirmed = models.BooleanField(default=False)
+
+class BasketItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    basket = models.ForeignKey(Basket, related_name="items", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()

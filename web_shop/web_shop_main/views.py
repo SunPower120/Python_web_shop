@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import Product, Category
-from .serializers import ProductSerializer, CategorySerializer
+from .models import Product, Category, Basket, BasketItem
+from .serializers import ProductSerializer, CategorySerializer, BasketItemSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -45,5 +45,27 @@ def batch_delete_category(request):
         Category.objects.filter(id__in=category_ids).delete()
 
         return Response({"message": "Categorie deleted successfully"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class AddToBasketView(generics.CreateAPIView):
+    queryset = BasketItem.objects.all()
+    serializer_class = BasketItemSerializer
+
+    def perform_create(self, serializer):
+        basket, _ = Basket.objects.get_or_create(user=self.request.user, confirmed=False)
+        serializer.save(basket=basket)
+
+@api_view(['POST'])
+def confirm_basket(request):
+    try:
+        basket = Basket.objects.get(user=request.user, confirmed=False)
+        for item in basket.items.all():
+            product = item.product
+            product.amount = str(int(product.amount) - item.quantity)
+            product.save()
+        basket.confirmed = True
+        basket.save()
+        return Response({"message": "Basket confirmed and products updated."}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
