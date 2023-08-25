@@ -1,10 +1,11 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from .models import Product, Category, Basket, BasketItem
 from .serializers import ProductSerializer, CategorySerializer, BasketItemSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from knox.views import LoginView as KnoxLoginView
+from django.contrib.auth import login, authenticate
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -77,3 +78,17 @@ def confirm_basket(request):
         return Response({"message": "Basket confirmed and products updated."}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, format=None):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return super(LoginAPI, self).post(request, format=None)
+        else:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)

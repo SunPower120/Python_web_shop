@@ -1,2 +1,3 @@
-creating authorization for posting!
+creating authorization for posting! - deployment
+should add logout
 

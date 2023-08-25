@@ -42,6 +42,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         
 class KnoxTokenSerializer(serializers.ModelSerializer):
     auth_token = serializers.CharField(source='token_key')
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    
     
     class Meta:
         model = AuthToken
