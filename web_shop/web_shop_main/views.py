@@ -1,4 +1,6 @@
 from rest_framework import generics, status
+
+from .policies import StaffAccessPolicy
 from .models import Product, Category, Basket, BasketItem
 from .serializers import ProductSerializer, CategorySerializer, BasketItemSerializer
 from rest_framework.response import Response
@@ -6,13 +8,17 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login, authenticate
+from knox.views import LogoutView as KnoxLogoutView
+from rest_framework.response import Response
 
 
 class ProductListCreate(generics.ListCreateAPIView):
+    permission_classes = [StaffAccessPolicy,]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 class CategoryListCreate(generics.ListCreateAPIView):
+    permission_classes = [StaffAccessPolicy,]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -92,3 +98,9 @@ class LoginAPI(KnoxLoginView):
             return super(LoginAPI, self).post(request, format=None)
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutAPI(KnoxLogoutView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+        return Response({"message": "Logged out!"}, status=200)

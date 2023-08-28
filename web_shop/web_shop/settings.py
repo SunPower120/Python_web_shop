@@ -149,3 +149,21 @@ REST_KNOX = {
     'TOKEN_TTL': timedelta(hours=10),  # for example, 10 hours before the token expires
     'USER_SERIALIZER': 'web_shop_main.serializers.UserSerializer',
 }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

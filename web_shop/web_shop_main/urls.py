@@ -1,9 +1,6 @@
 from django.urls import path
-from .views import LoginAPI, batch_delete_products
-from .views import batch_delete_category
-from .views import ProductListCreate, CategoryListCreate, AddToBasketView, confirm_basket
+from .views import LoginAPI, LogoutAPI, batch_delete_products, batch_delete_category, ProductListCreate, CategoryListCreate, AddToBasketView, confirm_basket
 from djoser import views as djoser_views
-from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView
 
 urlpatterns = [
     path('products/', ProductListCreate.as_view(), name='product-list-create'),
@@ -14,7 +11,7 @@ urlpatterns = [
     path('confirm_basket/', confirm_basket, name='confirm-basket'),
     path('auth/register/', djoser_views.UserViewSet.as_view({'post': 'create'}), name='user-register'),
     path('auth/login/', LoginAPI.as_view(), name='knox_login'),
-    path('auth/logout/', KnoxLogoutView.as_view(), name='knox_logout'),
+    path('auth/logout/', LogoutAPI.as_view(), name='knox_logout'),
     
     
 ]
