@@ -8,9 +8,9 @@ urlpatterns = [
     path('auth/logout/', LogoutAPI.as_view(), name='knox_logout'),
     path('products/', ProductListCreate.as_view(), name='product-list-create'),
     path('categories/', CategoryListCreate.as_view(), name='category-list-create'),
-    path('products/delete', BatchDeleteProductsView.as_view, name='batch-delete-products'),
-    path('categories/delete', BatchDeleteCategoryView.as_view, name='batch-delete-category'),
+    path('products/delete', BatchDeleteProductsView.as_view(), name='batch-delete-products'),
+    path('categories/delete', BatchDeleteCategoryView.as_view(), name='batch-delete-category'),
     path('add_to_basket/', AddToBasketView.as_view(), name='add-to-basket'),
-    path('confirm_basket/', ConfirmBasketView.as_view, name='confirm-basket'),
+    path('confirm_basket/', ConfirmBasketView.as_view(), name='confirm-basket'),
 
 ]
