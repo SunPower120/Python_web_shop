@@ -1,3 +1,28 @@
 creating authorization for posting! - deployment
 should add logout
 
+ def test_category_list_create(self):
+        # Same as product but for category
+        
+        # Ensure only staff can access
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post('categories/', self.category_data)
+        self.assertEqual(response.status_code, 403)  # Forbiden for non-staff
+
+        # Make the user staff and test again
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.post('categories/', self.category_data)
+        self.assertEqual(response.status_code, 201)  # Created
+
+    def test_batch_delete_products(self):
+        # Ensure only staff can delete products
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post('products/delete', {'product_ids': [self.product.id]})
+        self.assertEqual(response.status_code, 403)  # Forbiden for non-staff
+        
+        # Make the user staff and test again
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.post('products/delete', {'product_ids': [self.product.id]})
+        self.assertEqual(response.status_code, 200)  # OK

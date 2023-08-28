@@ -35,13 +35,12 @@ class ViewTestCase(TestCase):
             'name': 'Test Product', 
             'description': 'Test Description', 
             'price': '100', 
-            'category': self.category.pk,  # Pass the ID instead of instance when sending the data
+            'category': self.category.pk,
             'amount': '10'
         }
         self.product = Product.objects.create(**self.product_data)
         
     def test_product_list_create(self):
-        # Ensure only staff can access
         self.client.force_authenticate(user=self.test_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
     
@@ -58,10 +57,7 @@ class ViewTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
         
 
-    # Similarly, you can continue writing tests for other views as well...
-
     def tearDown(self):
-        # Cleanup the DB from created test data
         self.product.delete()
         self.category.delete()
         self.test_user.delete()
