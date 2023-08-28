@@ -29,18 +29,22 @@ class ViewTestCase(TestCase):
         # Sample data for category
         self.category_data = {'name': 'Test Category'}
         self.category = Category.objects.create(**self.category_data)
+        
+        # Retrieving category
+        retrieved_category = Category.objects.get(name='Test Category')
     
         # Sample data for product
         self.product_data = {
             'name': 'Test Product', 
             'description': 'Test Description', 
             'price': '100', 
-            'category': self.category.pk,
+            'category': retrieved_category,
             'amount': '10'
         }
         self.product = Product.objects.create(**self.product_data)
-        
+
     def test_product_list_create(self):
+        print(self.product_data)
         self.client.force_authenticate(user=self.test_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
     
