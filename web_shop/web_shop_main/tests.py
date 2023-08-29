@@ -38,10 +38,10 @@ class ViewTestCase(TestCase):
             'name': 'Test Product', 
             'description': 'Test Description', 
             'price': '100', 
-            'category': retrieved_category,
+            'category': retrieved_category.pk,
             'amount': '10'
         }
-        self.product = Product.objects.create(**self.product_data)
+       
 
     def test_product_list_create(self):
         print(self.product_data)
@@ -62,7 +62,6 @@ class ViewTestCase(TestCase):
         
 
     def tearDown(self):
-        self.product.delete()
         self.category.delete()
         self.test_user.delete()
         self.test_admin_user.delete()
