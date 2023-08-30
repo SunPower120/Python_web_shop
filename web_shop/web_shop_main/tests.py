@@ -44,22 +44,46 @@ class ViewTestCase(TestCase):
        
 
     def test_product_list_create(self):
-        print(self.product_data)
         self.client.force_authenticate(user=self.test_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
     
         print("Response data:", response.data)
-        print(self.category)
-    
         self.assertEqual(response.status_code, 403)  
         
         self.client.force_authenticate(user=self.test_admin_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
-    
         print("Response data:", response.data)
-    
         self.assertEqual(response.status_code, 201)
         
+    def test_category_list_create(self):
+        self.client.force_authenticate(user=self.test_user)
+        response = self.client.post(reverse('category-list-create'), self.category_data)
+        self.assertEqual(response.status_code, 403) 
+
+        self.client.force_authenticate(user=self.test_admin_user)
+        response = self.client.post(reverse('category-list-create'), self.category_data)
+        self.assertEqual(response.status_code, 201)  
+
+    def test_batch_delete_products(self):
+        # First, use the admin user to create a product through a POST request.
+        self.client.force_authenticate(user=self.test_admin_user)
+        response = self.client.post(reverse('product-list-create'), self.product_data)
+        self.assertEqual(response.status_code, 201)
+    
+        # Extract the created product's id from the response
+        product_id = response.data.get('id')
+    
+        # Test the batch delete with a non-admin user
+        self.client.force_authenticate(user=self.test_user)
+        response = self.client.post(reverse('batch-delete-products'), {'product_ids': [product_id]}, format='json')
+        self.assertEqual(response.status_code, 403)  # Expecting forbidden for non-admin users
+        all_product_ids = Product.objects.values_list('id', flat=True)
+
+        # Test the batch delete with an admin user
+        self.client.force_authenticate(user=self.test_admin_user)
+        response = self.client.post(reverse('batch-delete-products'), {'product_ids': [product_id]}, format='json')
+        self.assertEqual(response.status_code, 200)  # Expecting successful deletion for admin users
+
 
     def tearDown(self):
         self.category.delete()

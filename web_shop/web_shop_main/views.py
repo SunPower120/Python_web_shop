@@ -9,6 +9,7 @@ from knox.views import LoginView, LogoutView
 from django.contrib.auth import login, authenticate
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ProductListCreate(generics.ListCreateAPIView):
@@ -29,8 +30,8 @@ class BatchDeleteProductsView(APIView):
         try:
             product_ids = request.data.get('product_ids', [])
             
-            if not set(product_ids).issubset(set(Product.objects.values_list('id', flat=True))):
-                return Response({"error": "Product ID are invalid."}, status=status.HTTP_400_BAD_REQUEST)
+            if not product_ids or not set(product_ids).issubset(set(Product.objects.values_list('id', flat=True))):
+                return Response({"error": "Invalid or missing product_ids."}, status=status.HTTP_400_BAD_REQUEST)
 
             Product.objects.filter(id__in=product_ids).delete()
 
@@ -45,8 +46,8 @@ class BatchDeleteCategoryView(APIView):
         try:
             category_ids = request.data.get('category_ids', [])
             
-            if not set(category_ids).issubset(set(Category.objects.values_list('id', flat=True))):
-                return Response({"error": "Category ID are invalid."}, status=status.HTTP_400_BAD_REQUEST)
+            if not category_ids or not set(category_ids).issubset(set(Category.objects.values_list('id', flat=True))):
+                return Response({"error": "Invalid or missing category_ids."}, status=status.HTTP_400_BAD_REQUEST)
 
             Category.objects.filter(id__in=category_ids).delete()
 
