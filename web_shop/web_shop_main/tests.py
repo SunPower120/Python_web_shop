@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User
 from knox.models import AuthToken
-from .models import Product, Category, Basket
+from .models import Product, Category, Basket, BasketItem
 from django.urls import reverse
 
 class ViewTestCase(TestCase):
@@ -37,13 +37,10 @@ class ViewTestCase(TestCase):
     def test_product_list_create(self):
         self.client.force_authenticate(user=self.test_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
-    
-        print("Response data:", response.data)
         self.assertEqual(response.status_code, 403)  
         
         self.client.force_authenticate(user=self.test_admin_user)
         response = self.client.post(reverse('product-list-create'), self.product_data)
-        print("Response data:", response.data)
         self.assertEqual(response.status_code, 201)
         
     def test_category_list_create(self):
@@ -85,6 +82,36 @@ class ViewTestCase(TestCase):
         self.client.force_authenticate(user=self.test_admin_user)
         response = self.client.post(reverse('batch-delete-category'), {'category_ids': [category_id]}, format='json')
         self.assertEqual(response.status_code, 200) 
+        
+    def test_add_to_basket_view_authenticated(self):      
+        self.client.force_authenticate(user=self.test_admin_user)
+        product_response = self.client.post(reverse('product-list-create'), self.product_data)
+        self.assertEqual(product_response.status_code, 201)
+        product_id = product_response.data['id']
+
+        self.client.force_authenticate(user=self.test_user)
+        url = reverse('add-to-basket')
+        data = {
+            'product': product_id,
+            'quantity': 2
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+
+    def test_confirm_basket_view_authenticated(self):
+        self.client.force_authenticate(user=self.test_admin_user)
+        product_response = self.client.post(reverse('product-list-create'), self.product_data)
+        self.assertEqual(product_response.status_code, 201)
+        product = Product.objects.get(pk=product_response.data['id'])
+
+        self.client.force_authenticate(user=self.test_user)
+
+        basket = Basket.objects.create(user=self.test_user)
+        BasketItem.objects.create(basket=basket, product=product, quantity=2)
+
+        url = reverse('confirm-basket')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
         self.category.delete()

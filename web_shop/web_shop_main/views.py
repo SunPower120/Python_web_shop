@@ -99,7 +99,7 @@ class LoginAPI(LoginView):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutAPI(LogoutView):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
         return Response({"message": "Logged out!"}, status=200)
