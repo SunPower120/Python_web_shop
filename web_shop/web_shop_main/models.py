@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -12,9 +13,11 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     amount = models.CharField(max_length=7, null=True)
 
+
 class Basket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     confirmed = models.BooleanField(default=False)
+
 
 class BasketItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
